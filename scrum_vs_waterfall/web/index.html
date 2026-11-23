@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scrum vs. Waterfall — Pixel 2D Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- ==================== TELA INICIAL ==================== -->
+    <section id="screen-start" class="screen active">
+      <header class="start-header">
+        <div class="brand-badge">★ SIMULADOR PIXEL 2D DE GESTÃO DE PROJETOS ★</div>
+        <h1>SCRUM <span class="vs-pill">VS</span> WATERFALL</h1>
+        <p class="subtitle">
+          O desafio não é apenas entregar um projeto. É saber como gerenciá-lo.
+          Escolha um case robusto, defina a metodologia e lidere sua equipe!
+        </p>
+      </header>
+
+      <div class="start-grid">
+        <div class="start-step pixel-box">
+          <div class="step-header">
+            <span class="step-num">1</span>
+            <h2>ESCOLHA O CASE</h2>
+          </div>
+          <div id="cases-container" class="cases-list"></div>
+        </div>
+
+        <div class="start-step pixel-box">
+          <div class="step-header">
+            <span class="step-num">2</span>
+            <h2>ESCOLHA A METODOLOGIA</h2>
+          </div>
+
+          <div class="methodology-grid">
+            <button type="button" class="method-card pixel-btn-card" data-method="SCRUM" id="btn-method-scrum">
+              <div class="method-icon scrum-icon" aria-hidden="true">
+                <svg viewBox="0 0 16 16" width="44" height="44" shape-rendering="crispEdges">
+                  <rect x="4" y="2" width="8" height="2" fill="currentColor"/>
+                  <rect x="12" y="4" width="2" height="8" fill="currentColor"/>
+                  <rect x="4" y="12" width="8" height="2" fill="currentColor"/>
+                  <rect x="2" y="4" width="2" height="5" fill="currentColor"/>
+                  <rect x="10" y="1" width="2" height="2" fill="currentColor"/>
+                  <rect x="10" y="4" width="2" height="2" fill="currentColor"/>
+                  <rect x="6" y="6" width="4" height="4" fill="currentColor" opacity="0.35"/>
+                </svg>
+              </div>
+              <div class="method-info">
+                <h3>SCRUM</h3>
+                <p>Sprints curtas, backlog adaptável e entregas incrementais.</p>
+              </div>
+            </button>
+
+            <button type="button" class="method-card pixel-btn-card" data-method="WATERFALL" id="btn-method-waterfall">
+              <div class="method-icon waterfall-icon" aria-hidden="true">
+                <svg viewBox="0 0 16 16" width="44" height="44" shape-rendering="crispEdges">
+                  <rect x="1" y="2" width="5" height="3" fill="currentColor"/>
+                  <rect x="5" y="6" width="5" height="3" fill="currentColor"/>
+                  <rect x="9" y="10" width="6" height="3" fill="currentColor"/>
+                  <rect x="6" y="3" width="2" height="1" fill="#93c5fd"/>
+                  <rect x="7" y="4" width="1" height="2" fill="#93c5fd"/>
+                  <rect x="10" y="7" width="2" height="1" fill="#93c5fd"/>
+                  <rect x="11" y="8" width="1" height="2" fill="#93c5fd"/>
+                </svg>
+              </div>
+              <div class="method-info">
+                <h3>WATERFALL</h3>
+                <p>Cascata sequencial: Requisitos &rarr; Projeto &rarr; Código &rarr; Teste &rarr; Produção.</p>
+              </div>
+            </button>
+          </div>
+
+          <div id="selected-case-brief" class="brief-box hidden">
+            <h4>► BRIEFING DO CASE</h4>
+            <p id="brief-text"></p>
+          </div>
+
+          <button type="button" id="btn-start-game" class="btn-primary btn-large" disabled>
+            ► INICIAR PROJETO
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TELA FIXA DE JOGO ==================== -->
+    <section id="screen-game" class="screen">
+      <!-- HUD SUPERIOR PIXELADO -->
+      <header class="hud-bar pixel-box">
+        <div class="hud-title-group">
+          <span id="hud-methodology-badge" class="badge">SCRUM</span>
+          <div>
+            <h2 id="hud-case-name">Projeto</h2>
+            <span id="hud-stage-label" class="hud-sub">Etapa 1</span>
+          </div>
+        </div>
+
+        <div class="hud-metrics">
+          <div class="metric-pill">
+            <div class="metric-top"><span>PROG</span><strong id="m-progress">0%</strong></div>
+            <div class="bar-track"><div id="bar-progress" class="bar-fill bar-progress"></div></div>
+          </div>
+          <div class="metric-pill">
+            <div class="metric-top"><span>PERF</span><strong id="m-performance">70</strong></div>
+            <div class="bar-track"><div id="bar-performance" class="bar-fill bar-perf"></div></div>
+          </div>
+          <div class="metric-pill">
+            <div class="metric-top"><span>SATISF</span><strong id="m-satisfaction">75</strong></div>
+            <div class="bar-track"><div id="bar-satisfaction" class="bar-fill bar-sat"></div></div>
+          </div>
+          <div class="metric-pill">
+            <div class="metric-top"><span>ÂNIMO</span><strong id="m-morale">80</strong></div>
+            <div class="bar-track"><div id="bar-morale" class="bar-fill bar-morale"></div></div>
+          </div>
+          <div class="metric-pill metric-numeric">
+            <span class="num-label">ORÇAMENTO</span>
+            <strong id="m-budget">R$ 400.000</strong>
+          </div>
+          <div class="metric-pill metric-numeric">
+            <span class="num-label">PRAZO</span>
+            <strong id="m-deadline">16 sem.</strong>
+          </div>
+        </div>
+
+        <button type="button" id="btn-back-home" class="btn-ghost" title="Voltar à tela inicial">
+          MENU
+        </button>
+      </header>
+
+      <!-- ========== FASE 1 & 3: MAPA DA METODOLOGIA (ANTES E APÓS A DECISÃO) ========== -->
+      <section id="view-methodology-stage" class="methodology-stage pixel-box hidden">
+        <div class="panel-header-row">
+          <h3 id="viz-title">FLUXO DO PROJETO</h3>
+          <div id="viz-status-pill" class="viz-status-pill">EM ANDAMENTO</div>
+        </div>
+
+        <div id="methodology-viz" class="methodology-viz"></div>
+
+        <!-- Rodapé ANTES da decisão -->
+        <div id="map-before-footer" class="map-footer hidden">
+          <div class="map-call-row">
+            <div id="map-next-avatar" class="mini-avatar"></div>
+            <div class="map-call-text">
+              <div id="map-before-stage" class="map-stage-tag">ETAPA ATUAL</div>
+              <p id="map-before-summary"></p>
+            </div>
+          </div>
+          <button type="button" id="btn-enter-decision" class="btn-primary btn-action">
+            ► ENTRAR NA ETAPA
+          </button>
+        </div>
+
+        <!-- Rodapé APÓS a decisão (feedback + impacto + reação) -->
+        <div id="map-after-footer" class="map-after-panel hidden">
+          <div id="rollback-alert" class="rollback-alert hidden"></div>
+
+          <div class="after-grid">
+            <div class="after-character-box">
+              <div id="after-avatar" class="after-avatar"></div>
+              <div class="after-reaction-text">
+                <div class="after-speaker">
+                  <span id="after-char-tag" class="char-tag">[DEV]</span>
+                  <strong id="after-char-name">Personagem</strong>
+                  <span id="feedback-mood-badge" class="mood-badge">OK</span>
+                </div>
+                <p id="after-char-reaction"></p>
+                <div class="lesson-inline">
+                  <strong>LIÇÃO:</strong> <span id="lesson-text"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="after-impact-box">
+              <div id="feedback-chosen-title" class="chosen-label"></div>
+              <div id="impact-chips" class="impact-chips"></div>
+              <div class="rules-box">
+                <h4>REGRAS ATIVADAS</h4>
+                <ul id="rules-list"></ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="after-actions">
+            <button type="button" id="btn-next-turn" class="btn-primary btn-large">
+              ► AVANÇAR PARA PRÓXIMA ETAPA
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== FASE 2: TELA LIMPA DE DECISÃO (PERSONAGEM 2D + OPÇÕES) ========== -->
+      <main id="view-decision-stage" class="play-grid hidden">
+        <!-- COLUNA ESQUERDA: PALCO 2D PIXEL ART DO PERSONAGEM -->
+        <section class="stage-card pixel-box">
+          <div class="office-scene" id="office-scene">
+            <div class="office-window">
+              <div class="window-sky">
+                <div class="px-cloud c1"></div>
+                <div class="px-cloud c2"></div>
+              </div>
+              <div class="window-frame"></div>
+            </div>
+
+            <div class="office-board">
+              <div class="board-title" id="board-title">BOARD</div>
+              <div class="board-cards">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+
+            <div class="speech-bubble" id="speech-bubble">
+              <div class="speech-speaker">
+                <span id="char-tag" class="char-tag">[DEV]</span>
+                <strong id="char-name">Personagem</strong>
+                <span id="char-role" class="char-role">Cargo</span>
+              </div>
+              <p id="char-speech">Carregando demanda...</p>
+            </div>
+
+            <div class="character-slot" id="character-slot"></div>
+
+            <div class="office-desk">
+              <div class="desk-laptop"></div>
+              <div class="desk-mug"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- COLUNA DIREITA: OPÇÕES DE TOMADA DE DECISÃO -->
+        <section class="decision-card pixel-box">
+          <div class="event-header">
+            <span id="event-turn-badge" class="turn-badge">TURNO 1</span>
+            <h3 id="event-title">Título do Evento</h3>
+          </div>
+          <p id="event-context" class="event-context"></p>
+          <div id="options-list" class="options-list"></div>
+        </section>
+      </main>
+    </section>
+
+    <!-- ==================== MODAL DE NEGOCIAÇÃO DE PRAZO ==================== -->
+    <div id="modal-negotiation" class="modal-backdrop hidden">
+      <div class="modal-card pixel-box">
+        <div class="modal-badge">! ALERTA DE PRAZO !</div>
+        <h3>O PRAZO ACABOU! NEGOCIAR EXTENSÃO?</h3>
+        <p id="negotiation-text"></p>
+        <div class="modal-actions">
+          <button type="button" id="btn-negotiate-accept" class="btn-primary">
+            ► SIM, NEGOCIAR (+4 SEMANAS)
+          </button>
+          <button type="button" id="btn-negotiate-reject" class="btn-danger">
+            ✕ NÃO NEGOCIAR (ENCERRAR)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TELA FINAL / DEBRIEFING ==================== -->
+    <section id="screen-end" class="screen">
+      <div class="end-card pixel-box">
+        <div id="end-status-badge" class="end-badge">PROJETO ENTREGUE</div>
+        <h2 id="end-title">Relatório Final</h2>
+        <p id="end-reason" class="end-reason"></p>
+
+        <div class="score-banner">
+          <div class="grade-box" id="end-grade">A</div>
+          <div>
+            <div class="score-num">PONTUAÇÃO: <strong id="end-score">85/100</strong></div>
+            <p id="end-verdict"></p>
+          </div>
+        </div>
+
+        <div id="end-metrics-grid" class="end-metrics-grid"></div>
+
+        <div class="comparison-box">
+          <h3>ANÁLISE: SCRUM VS. WATERFALL NESTE CASE</h3>
+          <p id="end-fit-summary" class="fit-summary"></p>
+          <div class="comparison-columns">
+            <div class="comp-col comp-scrum">
+              <h4>COM SCRUM</h4>
+              <p id="end-scrum-text"></p>
+            </div>
+            <div class="comp-col comp-waterfall">
+              <h4>COM WATERFALL</h4>
+              <p id="end-waterfall-text"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="end-actions">
+          <button type="button" id="btn-play-again" class="btn-primary btn-large">
+            ► JOGAR NOVAMENTE / TESTAR OUTRA METODOLOGIA
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
